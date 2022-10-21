@@ -20,7 +20,7 @@ class Product(models.Model):
         return self.name
 
 class Cart(models.Model):
-    customer = models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE,null=True,related_name='buyer')
     date_ordered = models.DateField(auto_now_add = True)
     complete = models.BooleanField(default=False)
 
@@ -41,7 +41,7 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE,null=False)
-    cart = models.ForeignKey(Cart,on_delete=models.CASCADE,null=False)
+    cart = models.ForeignKey(Cart,on_delete=models.CASCADE,null=False,related_name='items')
     quantity = models.IntegerField(default = 0)
     date_added = models.DateField(auto_now_add=True)
 
