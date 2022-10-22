@@ -1,4 +1,4 @@
-from .serializers import ProductSerializer, CartSerializer,CartItemSerializer
+from .serializers import ProductSerializer, CartSerializer,CartItemSerializer,CategorySerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import *
@@ -7,6 +7,11 @@ from .models import *
 @api_view(['GET'])
 def getProducts(request):
     serializer = ProductSerializer(Product.objects.all(),many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def filterProducts(request,pk):
+    serializer = ProductSerializer(Product.objects.filter(category = pk),many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -37,6 +42,39 @@ def deleteProduct(request,pk):
         serializer.delete()
     return Response('Product deleted successfully')
 
+#category api
+@api_view(['GET'])
+def getCategory(request):
+    serializer = CategorySerializer(Category.objects.all(),many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getCategoryDetails(request,pk):
+    serializer = CategorySerializer(Category.objects.get(id = pk),many=False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def addCategory(request):
+    serializer = CategorySerializer(data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+def updateCategory(request,pk):
+    cart = Category.objects.get(id=pk)
+    serializer = CategorySerializer(instance=cart,data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def deleteCategory(request,pk):
+    cart = Category.objects.get(id=pk)
+    serializer = CategorySerializer(instance=cart,data = request.data)
+    if serializer.is_valid():
+        serializer.delete()
+    return Response('Category deleted successfully')
 
 #cart api
 @api_view(['GET'])

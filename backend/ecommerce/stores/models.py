@@ -1,16 +1,19 @@
-from email.policy import default
 from django.db import models
 from customers.models import Customer
 
+class Category(models.Model):
+    title=models.CharField(max_length=25,null=False)
+    created_at=models.DateTimeField(auto_now_add=True)
+    modified_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+
 class Product(models.Model):
     name=models.CharField(max_length=60,null=False)
-    image=models.ImageField(upload_to='products/',null=False)
-    CATEGORIES =[('Mens Wear','Mens Wear'),
-                ('Womens Wear','Womens Wear'),
-                ('Accessories','Accessories'),
-                ('Electronics','Electronics')
-                ]
-    category=models.CharField(max_length=60,choices = CATEGORIES,null=False)
+    image=models.ImageField(upload_to='media/products/',null=False)
+    category=models.ForeignKey(Category,on_delete=models.CASCADE,null=False)
     price=models.IntegerField(default=0)
     description=models.TextField(max_length=255,null=True)
     date_added=models.DateTimeField(auto_now_add=True)
