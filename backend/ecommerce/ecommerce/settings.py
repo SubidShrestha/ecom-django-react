@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-t902zho6fdaj!(i#3*dh2_gsk3p-vfw^^)0rn)tc1sf+us7)e*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,12 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    "corsheaders",
+
     'customers',
     'stores',
 
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    'corsheaders',
 
 ]
 
@@ -56,6 +57,8 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,10 +66,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+
 ]
 
-CORS_ALLOW_ALL_ORIGINS: True
+CORS_ALLOW_ALL_ORIGINS= True
 
 ROOT_URLCONF = 'ecommerce.urls'
 
@@ -169,6 +172,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIR=(
+    os.path.join(BASE_DIR,'static')
+)
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'/media/')
 
