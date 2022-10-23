@@ -1,49 +1,37 @@
-from .serializers import CustomerSerializer
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from .serializers import *
 from .models import *
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from rest_framework.generics import ListAPIView,UpdateAPIView,DestroyAPIView,RetrieveAPIView,GenericAPIView
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
-@api_view(['GET'])
-def getCustomer(request):
-    customer_list= Customer.objects.all()
-    page = request.GET.get('page', 1)
-    paginator = Paginator(customer_list, 3)
-
-    try:
-        customers = paginator.page(page)
-    except PageNotAnInteger:
-        customers = paginator.page(1)
-    except EmptyPage:
-        customers = paginator.page(paginator.num_pages)
+class CustomerListView(ListAPIView):
+    queryset=Customer.objects.all()
+    serializer_class=CustomerSerializer
+    pagination_class=PageNumberPagination
         
-    serializer = CustomerSerializer(customers,many=True)
-    return Response(serializer.data)
+class CustomerDetailsView(RetrieveAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
 
-@api_view(['GET'])
-def getCustomerDetails(request,pk):
-    serializer = CustomerSerializer(Customer.objects.get(id = pk),many=False)
-    return Response(serializer.data)
+class CreateCustomerView(GenericAPIView):
+    serializer_class= RegistrationSerializer
 
-@api_view(['POST'])
-def addCustomer(request):
-    serializer = CustomerSerializer(data = request.data)
-    if serializer.is_valid():
-        serializer.save()
-    return Response(serializer.data)
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(serializer.data)
+        
+class UpdateCustomerView(UpdateAPIView):
+    queryset = Customer.objects.all()
+    serializer_class=CustomerSerializer
 
-@api_view(['PUT'])
-def updateCustomer(request,pk):
-    customer = Customer.objects.get(id=pk)
-    serializer = CustomerSerializer(instance=customer,data = request.data)
-    if serializer.is_valid():
-        serializer.save()
-    return Response(serializer.data)
+    def perform_update(self, serializer):
+        return super().perform_update(serializer)
 
-@api_view(['DELETE'])
-def deleteCustomer(request,pk):
-    customer = Customer.objects.get(id=pk)
-    serializer = CustomerSerializer(instance=customer,data = request.data)
-    if serializer.is_valid():
-        serializer.delete()
-    return Response('Customer deleted successfully')
+class DeleteCustomerView(DestroyAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    
+    def perform_destroy(self, instance):
+        return super().perform_destroy(instance)

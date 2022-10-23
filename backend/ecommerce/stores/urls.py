@@ -1,36 +1,36 @@
 from django.urls import path
 from . import views
+from .views import *
 
 urlpatterns = [
     #product
-    path('products/',views.getProducts),
-    path('products/filter/<str:pk>',views.filterProducts),
-    path('products/<str:pk>',views.getProductDetails),
-    path('products/add',views.addProduct),
-    path('products/update/<str:pk>',views.updateProduct),
-    path('products/delete/<str:pk>',views.deleteProduct),
+    path('products/',ProductListView.as_view()),
+    path('products/get/<str:pk>',ProductDetailsView.as_view()),
+    path('products/add',CreateProductView.as_view()),
+    path('products/update/<str:pk>',UpdateProductView.as_view()),
+    path('products/delete/<str:pk>',DeleteProductView.as_view()),
     #category
-    path('category/',views.getCategory),
-    path('category/<str:pk>',views.getCategoryDetails),
-    path('category/add',views.addCategory),
-    path('category/update/<str:pk>',views.updateCategory),
-    path('carts/delete<str:pk>',views.deleteCategory),
+    path('category/',CategoryListView.as_view()),
+    path('category/get/<str:pk>',CategoryDetailsView.as_view()),
+    path('category/add',CreateCategoryView.as_view()),
+    path('category/update/<str:pk>',UpdateCategoryView.as_view()),
+    path('carts/delete/<str:pk>',DeleteCategoryView.as_view()),
     #cart
-    path('carts/',views.getCarts),
-    path('carts/<str:pk>',views.getCartDetails),
-    path('carts/add',views.addCart),
-    path('carts/update/<str:pk>',views.updateCart),
-    path('carts/delete<str:pk>',views.deleteCart),
+    path('carts/',CartListView.as_view()),
+    path('carts/get/<str:pk>',CartDetailsView.as_view()),
+    path('carts/add',CreateCartView.as_view()),
+    path('carts/update/<str:pk>',UpdateCartView.as_view()),
+    path('carts/delete/<str:pk>',DeleteCartView.as_view()),
     #cartitem
-    path('cartitems/',views.getCartItems),
-    path('cartitems/<str:pk>',views.getCartItemDetails),
-    path('cartitems/add',views.addCartItem),
-    path('cartitems/update/<str:pk>',views.updateCartItem),
-    path('cartitems/delete<str:pk>',views.deleteCartItem),
+    path('cartitems/',CartItemsList.as_view()),
+    path('cartitems/get/<str:pk>',CartItemDetailsView.as_view()),
+    path('cartitems/add',CreateCartItemView.as_view()),
+    path('cartitems/update/<str:pk>',UpdateCartItemView.as_view()),
+    path('cartitems/delete/<str:pk>',DeleteCartItemView.as_view()),
     #shipping
-    path('shipping/',views.getShippings),
-    path('shipping/<str:pk>',views.getShippingDetails),
-    path('shipping/add',views.addShipping),
-    path('shipping/update/<str:pk>',views.updateShipping),
-    path('shipping/delete<str:pk>',views.deleteShipping),
+    path('shipping/',ShippingListView.as_view()),
+    path('shipping/get/<str:pk>',ShippingDetailsView.as_view()),
+    path('shipping/add',CreateShippingView.as_view()),
+    path('shipping/update/<str:pk>',UpdateShippingView.as_view()),
+    path('shipping/delete/<str:pk>',DeleteShippingView.as_view()),
 ]
