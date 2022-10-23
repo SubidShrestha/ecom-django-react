@@ -2,10 +2,22 @@ from .serializers import CustomerSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import *
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @api_view(['GET'])
 def getCustomer(request):
-    serializer = CustomerSerializer(Customer.objects.all(),many=True)
+    customer_list= Customer.objects.all()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(customer_list, 3)
+
+    try:
+        customers = paginator.page(page)
+    except PageNotAnInteger:
+        customers = paginator.page(1)
+    except EmptyPage:
+        customers = paginator.page(paginator.num_pages)
+        
+    serializer = CustomerSerializer(customers,many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])

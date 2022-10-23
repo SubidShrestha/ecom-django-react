@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from customers.serializers import CustomerSerializer
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,3 +44,10 @@ class CartSerializer(serializers.ModelSerializer):
         total = sum([item.quantity for item in instance.items.all()])
         return total
 
+class ShippingSerializer(serializers.ModelSerializer):
+    customer = CustomerSerializer(many=False,read_only=True,allow_null=False)
+    cart = CartSerializer(many=False,read_only=True,allow_null=False)
+
+    class Meta:
+        model = ShippingLocation
+        fields = ['id','customer','cart','city','location']

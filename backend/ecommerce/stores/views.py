@@ -1,17 +1,40 @@
-from .serializers import ProductSerializer, CartSerializer,CartItemSerializer,CategorySerializer
+from .serializers import *
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import *
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 #product api
 @api_view(['GET'])
 def getProducts(request):
-    serializer = ProductSerializer(Product.objects.all(),many=True)
+    product_list= Product.objects.all()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(product_list, 3)
+
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
+    serializer = ProductSerializer(products,many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
 def filterProducts(request,pk):
-    serializer = ProductSerializer(Product.objects.filter(category = pk),many=True)
+    product_list= Product.objects.filter(category = pk)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(product_list, 3)
+
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
+    serializer = ProductSerializer(products,many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -79,7 +102,17 @@ def deleteCategory(request,pk):
 #cart api
 @api_view(['GET'])
 def getCarts(request):
-    serializer = CartSerializer(Cart.objects.all(),many=True)
+    cart_list= Cart.objects.all()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(cart_list, 3)
+
+    try:
+        carts = paginator.page(page)
+    except PageNotAnInteger:
+        carts = paginator.page(1)
+    except EmptyPage:
+        carts = paginator.page(paginator.num_pages)
+    serializer = CartSerializer(carts,many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -113,12 +146,22 @@ def deleteCart(request,pk):
 #cart items api
 @api_view(['GET'])
 def getCartItems(request):
-    serializer = CartItemSerializer(CartItem.objects.all(),many=True)
+    cartitem_list= CartItem.objects.all()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(cartitem_list, 3)
+
+    try:
+        cartitems = paginator.page(page)
+    except PageNotAnInteger:
+        cartitems = paginator.page(1)
+    except EmptyPage:
+        cartitems = paginator.page(paginator.num_pages)
+    serializer = CartSerializer(cartitems,many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
 def getCartItemDetails(request,pk):
-    serializer = CartSerializer(CartItem.objects.get(id = pk),many=False)
+    serializer = CartItemSerializer(CartItem.objects.get(id = pk),many=False)
     return Response(serializer.data)
 
 @api_view(['POST'])
@@ -143,3 +186,48 @@ def deleteCartItem(request,pk):
     if serializer.is_valid():
         serializer.delete()
     return Response('Cart Item deleted successfully')
+
+#shipping location api
+@api_view(['GET'])
+def getShippings(request):
+    shipping_list= ShippingLocation.objects.all()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(shipping_list, 3)
+
+    try:
+        shippings = paginator.page(page)
+    except PageNotAnInteger:
+        shippings = paginator.page(1)
+    except EmptyPage:
+        shippings = paginator.page(paginator.num_pages)
+        
+    serializer = ShippingSerializer(shippings,many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getShippingDetails(request,pk):
+    serializer = ShippingSerializer(ShippingLocation.objects.get(id = pk),many=False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def addShipping(request):
+    serializer = ShippingSerializer(data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+def updateShipping(request,pk):
+    Shipping = ShippingLocation.objects.get(id=pk)
+    serializer = ShippingSerializer(instance=Shipping,data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def deleteShipping(request,pk):
+    Shipping = ShippingLocation.objects.get(id=pk)
+    serializer = ShippingSerializer(instance=Shipping,data = request.data)
+    if serializer.is_valid():
+        serializer.delete()
+    return Response('Shipping Item deleted successfully')
