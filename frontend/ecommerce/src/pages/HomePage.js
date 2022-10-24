@@ -1,13 +1,16 @@
 import React, {useEffect, useState} from 'react'
 import ReactPaginate from 'react-paginate';
+import { useParams } from 'react-router-dom';
 import './HomePage.css'
 export default function HomePage() {
 
     const [product, setProducts] = useState([])
     const [pageCount, setPageCount] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
+
+    let {query} =   useParams("")
      
-    let productUrl= `http://127.0.0.1:8000/api/stores/products/?page=${currentPage}`
+    let productUrl= `http://127.0.0.1:8000/api/stores/products/?page=${currentPage}&?search=${query}`
     const handlePageChange = (event) => {
 		setCurrentPage(event.selected+1);
 	};
@@ -42,7 +45,7 @@ export default function HomePage() {
                         <div style={{padding: "5px"}}><label>Category:</label> {data.category}</div>
                         <div style={{padding: "5px"}}><label>Price:</label> Rs.{data.price}</div>
                         <div style={{padding: "5px"}}><label>Description:</label> {data.description}</div>
-                        <button type="submit">Select Product</button>
+                        <button type="submit" className='button'>Add To Cart <i className="fa fa-shopping-cart" style={{background: 'transparent',padding: "0px 0px 0px 3px"}}></i> </button>
                     </div>
                 )
             )
