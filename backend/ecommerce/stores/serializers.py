@@ -9,6 +9,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(many=False,read_only=True,slug_field='title')
+
     class Meta:
         model = Product
         fields = "__all__"
